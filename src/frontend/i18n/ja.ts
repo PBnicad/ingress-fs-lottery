@@ -1,0 +1,69 @@
+export default {
+  // App
+  "app.title": "Ingress FS 抽選システム",
+  "app.subtitle": "確定的抽選 · 結果再現可能",
+  "app.tab.lottery": "抽選",
+  "app.tab.query": "結果照会",
+  "app.notice": "Auto Score Sheet に掲載されているエージェントのみ抽選対象となります。",
+
+  // UrlInput
+  "url.label": "Event URL",
+  "url.placeholder": "Event ID または URL を入力",
+  "url.error.invalid": "数値の Event ID または fevgames.net の URL を入力してください",
+  "url.error.fetch": "エージェントリストの取得に失敗しました",
+  "url.error.status": "リクエスト失敗",
+  "url.button.fetch": "エージェント取得",
+  "url.button.fetching": "取得中...",
+
+  // AgentList
+  "agents.title": "Agent List",
+  "agents.count": "計 {n} 名",
+  "agents.badge": "{n} 名",
+  "agents.enl": "ENL · エンライトンド",
+  "agents.res": "RES · レジスタンス",
+
+  // LotteryForm
+  "lottery.title": "Lottery Settings",
+  "lottery.count.label": "当選人数",
+  "lottery.count.placeholder": "1",
+  "lottery.count.error": "総人数 ({n}) を超えることはできません",
+  "lottery.seed.label": "Seed（任意）",
+  "lottery.seed.placeholder": "空欄で自動生成",
+  "lottery.seed.error": "Seed は整数で入力してください",
+  "lottery.error.draw": "抽選に失敗しました",
+  "lottery.error.status": "抽選に失敗しました",
+  "lottery.button.draw": "抽選開始",
+  "lottery.button.drawing": "抽選中...",
+
+  // LotteryResult
+  "result.title": "Result",
+  "result.winners": "当選者 ({n})",
+  "result.noWinners": "当選者なし",
+  "result.copy": "結果をコピー",
+  "result.meta.id": "ID",
+  "result.meta.seed": "Seed",
+  "result.meta.time": "Time",
+  "result.badge": "{n} 名",
+  "result.copy.header": "Ingress FS 抽選結果",
+  "result.copy.event": "イベント: ",
+  "result.copy.id": "抽選 ID: ",
+  "result.copy.seed": "Seed: ",
+  "result.copy.time": "時間: ",
+  "result.copy.agents": "当選 Agent:",
+  "result.copy.enl": "エンライトンド/ENL",
+  "result.copy.res": "レジスタンス/RES",
+  "result.copy.summary": "参加 {total} 名、当選 {winners} 名",
+
+  // ResultQuery
+  "query.placeholder": "抽選 ID を入力",
+  "query.button": "照会",
+  "query.button.querying": "照会中...",
+  "query.error.notFound": "抽選記録が見つかりません",
+  "query.error.fail": "照会に失敗しました",
+  "query.meta.id": "ID: ",
+  "query.meta.seed": "Seed: ",
+  "query.meta.time": "時間: ",
+  "query.summary": "参加 {total} 名、当選 {winners} 名",
+  "query.winners": "当選者",
+  "query.allAgents": "全参加者を表示 ({n} 名)",
+} as const;

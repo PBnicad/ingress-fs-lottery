@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Agent, LotteryResultData } from "../App";
+import { useI18n } from "../i18n/context";
 
 interface Props {
   agents: Agent[];
@@ -16,6 +17,7 @@ export default function LotteryForm({
   onResult,
   onError,
 }: Props) {
+  const { t } = useI18n();
   const [count, setCount] = useState(1);
   const [seedInput, setSeedInput] = useState("");
   const [countError, setCountError] = useState("");
@@ -36,7 +38,7 @@ export default function LotteryForm({
       if (seedInput.trim()) {
         const seed = parseInt(seedInput, 10);
         if (isNaN(seed)) {
-          throw new Error("Seed 必须是整数");
+          throw new Error(t("lottery.seed.error"));
         }
         body.seed = seed;
       }
@@ -49,13 +51,13 @@ export default function LotteryForm({
 
       if (!res.ok) {
         const errData: any = await res.json().catch(() => ({}));
-        throw new Error(errData?.error || `抽奖失败 (${res.status})`);
+        throw new Error(errData?.error || `${t("lottery.error.status")} (${res.status})`);
       }
 
       const data: LotteryResultData = await res.json();
       onResult(data);
     } catch (e: any) {
-      onError(e.message || "抽奖失败");
+      onError(e.message || t("lottery.error.draw"));
     } finally {
       setDrawing(false);
     }
@@ -64,24 +66,28 @@ export default function LotteryForm({
   return (
     <div className="border border-black/8 rounded-lg p-4 sm:p-5 space-y-4">
       <span className="text-[11px] font-mono uppercase tracking-[0.54px] text-black/40">
-        Lottery Settings
+        {t("lottery.title")}
       </span>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <div>
           <label className="block text-[12px] text-black/50 mb-1.5">
-            中奖人数
+            {t("lottery.count.label")}
           </label>
           <input
             type="text"
             inputMode="numeric"
-            placeholder="1"
+            placeholder={t("lottery.count.placeholder")}
             value={count || ""}
             onChange={(e) => {
               const v = e.target.value.replace(/\D/g, "");
               const n = v ? Number(v) : 0;
               setCount(n);
-              setCountError(n > agents.length ? `不能超过总人数 (${agents.length})` : "");
+              setCountError(
+                n > agents.length
+                  ? t("lottery.count.error").replace("{n}", String(agents.length))
+                  : ""
+              );
             }}
             className={`w-full rounded-lg bg-black/3 border px-3 py-2 text-[14px] tracking-[-0.01em] outline-none transition-colors ${
               countError
@@ -95,14 +101,14 @@ export default function LotteryForm({
         </div>
         <div>
           <label className="block text-[12px] text-black/50 mb-1.5">
-            Seed（可选）
+            {t("lottery.seed.label")}
           </label>
           <input
             type="text"
             inputMode="numeric"
             value={seedInput}
             onChange={(e) => setSeedInput(e.target.value)}
-            placeholder="留空自动生成"
+            placeholder={t("lottery.seed.placeholder")}
             className="w-full rounded-lg bg-black/3 border border-black/10 px-3 py-2 text-[14px] tracking-[-0.01em] outline-none focus:border-black/30 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black transition-colors placeholder-black/25"
           />
         </div>
@@ -113,7 +119,7 @@ export default function LotteryForm({
         disabled={drawing || count < 1 || count > agents.length}
         className="w-full py-3 bg-black text-white rounded-full text-[14px] font-medium tracking-[-0.01em] hover:bg-black/80 disabled:bg-black/15 disabled:text-white/40 transition-colors outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
       >
-        {drawing ? "抽奖中..." : "开始抽奖"}
+        {drawing ? t("lottery.button.drawing") : t("lottery.button.draw")}
       </button>
     </div>
   );

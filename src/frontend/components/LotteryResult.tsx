@@ -1,4 +1,6 @@
 import type { Agent, LotteryResultData } from "../App";
+import { useI18n } from "../i18n/context";
+import type { Locale } from "../i18n/locales";
 
 interface Props {
   result: LotteryResultData;
@@ -9,11 +11,13 @@ interface Props {
 function FactionWinners({
   label,
   winners,
+  badgeText,
   color,
   startIndex,
 }: {
   label: string;
   winners: Agent[];
+  badgeText: string;
   color: "enl" | "res";
   startIndex: number;
 }) {
@@ -43,7 +47,7 @@ function FactionWinners({
           {label}
         </span>
         <span className={`text-[11px] font-mono px-2 py-0.5 rounded-full ${c.badge}`}>
-          {winners.length} 人
+          {badgeText}
         </span>
       </div>
       <div className="px-3 pb-3 space-y-1.5">
@@ -67,25 +71,35 @@ function FactionWinners({
   );
 }
 
+const dateLocales: Record<string, Locale> = {
+  zh: "zh-CN",
+  en: "en-US",
+  ja: "ja-JP",
+};
+
 export default function LotteryResult({ result, agents, eventTitle }: Props) {
+  const { locale, t } = useI18n();
   const enlWinners = result.winners.filter((w) => w.faction === "enl");
   const resWinners = result.winners.filter((w) => w.faction === "res");
+  const dl = dateLocales[locale] || "en-US";
 
   const copyResult = () => {
     const lines = [
-      `Ingress FS 抽奖结果`,
-      `活动: ${eventTitle}`,
-      `抽奖 ID: ${result.id}`,
-      `Seed: ${result.seed}`,
-      `时间: ${new Date(result.createdAt).toLocaleString("zh-CN")}`,
+      t("result.copy.header"),
+      `${t("result.copy.event")}${eventTitle}`,
+      `${t("result.copy.id")}${result.id}`,
+      `${t("result.copy.seed")}${result.seed}`,
+      `${t("result.copy.time")}${new Date(result.createdAt).toLocaleString(dl)}`,
       ``,
-      `中奖 Agent:`,
+      `${t("result.copy.agents")}`,
       ...result.winners.map(
         (w) =>
-          `- ${w.name} (${w.faction === "enl" ? "启蒙军/ENL" : "抵抗军/RES"})`
+          `- ${w.name} (${w.faction === "enl" ? t("result.copy.enl") : t("result.copy.res")})`
       ),
       ``,
-      `共 ${agents.length} 人参与，抽取 ${result.winners.length} 人`,
+      t("result.copy.summary")
+        .replace("{total}", String(agents.length))
+        .replace("{winners}", String(result.winners.length)),
     ];
     navigator.clipboard.writeText(lines.join("\n"));
   };
@@ -94,13 +108,13 @@ export default function LotteryResult({ result, agents, eventTitle }: Props) {
     <div className="border border-black/8 rounded-lg p-4 sm:p-5 space-y-4 sm:space-y-5">
       <div className="flex items-center justify-between">
         <span className="text-[11px] font-mono uppercase tracking-[0.54px] text-black/40">
-          Result
+          {t("result.title")}
         </span>
         <button
           onClick={copyResult}
           className="text-[12px] px-4 py-1.5 bg-black/5 rounded-full hover:bg-black/10 transition-colors outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
         >
-          复制结果
+          {t("result.copy")}
         </button>
       </div>
 
@@ -108,7 +122,7 @@ export default function LotteryResult({ result, agents, eventTitle }: Props) {
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <div className="bg-black/2 rounded-lg p-2.5 sm:p-3">
           <div className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.54px] text-black/30 mb-1">
-            ID
+            {t("result.meta.id")}
           </div>
           <div className="text-base sm:text-xl font-mono font-semibold tracking-tight">
             #{result.id}
@@ -116,7 +130,7 @@ export default function LotteryResult({ result, agents, eventTitle }: Props) {
         </div>
         <div className="bg-black/2 rounded-lg p-2.5 sm:p-3">
           <div className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.54px] text-black/30 mb-1">
-            Seed
+            {t("result.meta.seed")}
           </div>
           <div className="text-[11px] sm:text-[12px] font-mono text-amber-700 break-all leading-tight">
             {result.seed}
@@ -124,10 +138,10 @@ export default function LotteryResult({ result, agents, eventTitle }: Props) {
         </div>
         <div className="bg-black/2 rounded-lg p-2.5 sm:p-3">
           <div className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.54px] text-black/30 mb-1">
-            Time
+            {t("result.meta.time")}
           </div>
           <div className="text-[10px] sm:text-[11px] text-black/50 leading-tight">
-            {new Date(result.createdAt).toLocaleString("zh-CN")}
+            {new Date(result.createdAt).toLocaleString(dl)}
           </div>
         </div>
       </div>
@@ -135,25 +149,27 @@ export default function LotteryResult({ result, agents, eventTitle }: Props) {
       {/* Winners by faction */}
       <div className="space-y-2">
         <span className="text-[11px] font-mono uppercase tracking-[0.54px] text-black/40">
-          Winners ({result.winners.length})
+          {t("result.winners").replace("{n}", String(result.winners.length))}
         </span>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <FactionWinners
-            label="ENL · 启蒙军"
+            label={t("agents.enl")}
             winners={enlWinners}
+            badgeText={t("result.badge").replace("{n}", String(enlWinners.length))}
             color="enl"
             startIndex={0}
           />
           <FactionWinners
-            label="RES · 抵抗军"
+            label={t("agents.res")}
             winners={resWinners}
+            badgeText={t("result.badge").replace("{n}", String(resWinners.length))}
             color="res"
             startIndex={enlWinners.length}
           />
         </div>
         {enlWinners.length === 0 && resWinners.length === 0 && (
           <p className="text-[13px] text-black/30 text-center py-4">
-            无中奖者
+            {t("result.noWinners")}
           </p>
         )}
       </div>

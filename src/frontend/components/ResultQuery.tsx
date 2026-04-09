@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { Agent } from "../App";
+import { useI18n } from "../i18n/context";
+import type { Locale } from "../i18n/locales";
 
 interface LotteryRecord {
   id: number;
@@ -15,10 +17,12 @@ interface LotteryRecord {
 function FactionGroup({
   label,
   agents,
+  badgeText,
   color,
 }: {
   label: string;
   agents: Agent[];
+  badgeText: string;
   color: "enl" | "res";
 }) {
   if (agents.length === 0) return null;
@@ -47,7 +51,7 @@ function FactionGroup({
           {label}
         </span>
         <span className={`text-[11px] font-mono px-2 py-0.5 rounded-full ${c.badge}`}>
-          {agents.length} 人
+          {badgeText}
         </span>
       </div>
       <div className="px-3 pb-3 flex flex-wrap gap-1.5">
@@ -64,11 +68,19 @@ function FactionGroup({
   );
 }
 
+const dateLocales: Record<string, Locale> = {
+  zh: "zh-CN",
+  en: "en-US",
+  ja: "ja-JP",
+};
+
 export default function ResultQuery() {
+  const { locale, t } = useI18n();
   const [id, setId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [record, setRecord] = useState<LotteryRecord | null>(null);
+  const dl = dateLocales[locale] || "en-US";
 
   const query = async () => {
     setError("");
@@ -80,12 +92,12 @@ export default function ResultQuery() {
       const res = await fetch(`/api/lottery/${id}`);
       if (!res.ok) {
         const errData: any = await res.json().catch(() => ({}));
-        throw new Error(errData?.error || "未找到该抽奖记录");
+        throw new Error(errData?.error || t("query.error.notFound"));
       }
       const data: LotteryRecord = await res.json();
       setRecord(data);
     } catch (e: any) {
-      setError(e.message || "查询失败");
+      setError(e.message || t("query.error.fail"));
     } finally {
       setLoading(false);
     }
@@ -99,7 +111,7 @@ export default function ResultQuery() {
           inputMode="numeric"
           value={id}
           onChange={(e) => setId(e.target.value)}
-          placeholder="输入抽奖 ID"
+          placeholder={t("query.placeholder")}
           className="flex-1 min-w-0 rounded-full bg-black/3 border border-black/10 px-4 py-2.5 text-[14px] tracking-[-0.01em] text-black placeholder-black/30 outline-none focus:border-black/30 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black transition-colors"
           onKeyDown={(e) => e.key === "Enter" && query()}
         />
@@ -108,7 +120,7 @@ export default function ResultQuery() {
           disabled={loading || !id.trim()}
           className="px-5 sm:px-6 py-2.5 bg-black text-white rounded-full text-[13px] font-medium tracking-[-0.01em] hover:bg-black/80 disabled:bg-black/15 disabled:text-white/40 transition-colors outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black whitespace-nowrap"
         >
-          {loading ? "查询中..." : "查询"}
+          {loading ? t("query.button.querying") : t("query.button")}
         </button>
       </div>
 
@@ -127,41 +139,45 @@ export default function ResultQuery() {
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 text-[13px]">
               <div>
-                <span className="text-black/40">ID: </span>
+                <span className="text-black/40">{t("query.meta.id")}</span>
                 <span className="font-mono font-medium">#{record.id}</span>
               </div>
               <div>
-                <span className="text-black/40">Seed: </span>
+                <span className="text-black/40">{t("query.meta.seed")}</span>
                 <span className="font-mono text-[11px] text-amber-700">
                   {record.seed}
                 </span>
               </div>
               <div>
-                <span className="text-black/40">时间: </span>
+                <span className="text-black/40">{t("query.meta.time")}</span>
                 <span className="text-[11px] text-black/60">
-                  {new Date(record.createdAt).toLocaleString("zh-CN")}
+                  {new Date(record.createdAt).toLocaleString(dl)}
                 </span>
               </div>
             </div>
             <p className="text-[12px] text-black/40">
-              共 {record.agents.length} 人参与，抽取 {record.winnerCount} 人
+              {t("query.summary")
+                .replace("{total}", String(record.agents.length))
+                .replace("{winners}", String(record.winnerCount))}
             </p>
           </div>
 
           {/* Winners by faction */}
           <div className="space-y-2">
             <span className="text-[11px] font-mono uppercase tracking-[0.54px] text-black/40">
-              Winners
+              {t("query.winners")}
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FactionGroup
-                label="ENL · 启蒙军"
+                label={t("agents.enl")}
                 agents={record.winners.filter((w) => w.faction === "enl")}
+                badgeText={t("agents.badge").replace("{n}", String(record.winners.filter((w) => w.faction === "enl").length))}
                 color="enl"
               />
               <FactionGroup
-                label="RES · 抵抗军"
+                label={t("agents.res")}
                 agents={record.winners.filter((w) => w.faction === "res")}
+                badgeText={t("agents.badge").replace("{n}", String(record.winners.filter((w) => w.faction === "res").length))}
                 color="res"
               />
             </div>
@@ -170,17 +186,19 @@ export default function ResultQuery() {
           {/* All participants */}
           <details className="group">
             <summary className="text-[12px] text-black/40 cursor-pointer hover:text-black/60 transition-colors">
-              查看全部参与者 ({record.agents.length} 人)
+              {t("query.allAgents").replace("{n}", String(record.agents.length))}
             </summary>
             <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FactionGroup
-                label="ENL · 启蒙军"
+                label={t("agents.enl")}
                 agents={record.agents.filter((a) => a.faction === "enl")}
+                badgeText={t("agents.badge").replace("{n}", String(record.agents.filter((a) => a.faction === "enl").length))}
                 color="enl"
               />
               <FactionGroup
-                label="RES · 抵抗军"
+                label={t("agents.res")}
                 agents={record.agents.filter((a) => a.faction === "res")}
+                badgeText={t("agents.badge").replace("{n}", String(record.agents.filter((a) => a.faction === "res").length))}
                 color="res"
               />
             </div>

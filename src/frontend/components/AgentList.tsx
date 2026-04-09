@@ -1,4 +1,5 @@
 import type { Agent } from "../App";
+import { useI18n } from "../i18n/context";
 
 interface Props {
   enlAgents: Agent[];
@@ -8,10 +9,12 @@ interface Props {
 function FactionGroup({
   label,
   agents,
+  badgeText,
   color,
 }: {
   label: string;
   agents: Agent[];
+  badgeText: string;
   color: "enl" | "res";
 }) {
   const colors = {
@@ -45,7 +48,7 @@ function FactionGroup({
         <span
           className={`text-[11px] font-mono px-2 py-0.5 rounded-full ${c.badge}`}
         >
-          {agents.length} 人
+          {badgeText}
         </span>
       </div>
 
@@ -67,20 +70,33 @@ function FactionGroup({
 }
 
 export default function AgentList({ enlAgents, resAgents }: Props) {
+  const { t } = useI18n();
+  const total = enlAgents.length + resAgents.length;
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <span className="text-[11px] font-mono uppercase tracking-[0.54px] text-black/40">
-          Agent List
+          {t("agents.title")}
         </span>
         <span className="text-[12px] text-black/40">
-          共 <span className="font-medium text-black">{enlAgents.length + resAgents.length}</span> 人
+          {t("agents.count").replace("{n}", String(total))}
         </span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <FactionGroup label="ENL · 启蒙军" agents={enlAgents} color="enl" />
-        <FactionGroup label="RES · 抵抗军" agents={resAgents} color="res" />
+        <FactionGroup
+          label={t("agents.enl")}
+          agents={enlAgents}
+          badgeText={t("agents.badge").replace("{n}", String(enlAgents.length))}
+          color="enl"
+        />
+        <FactionGroup
+          label={t("agents.res")}
+          agents={resAgents}
+          badgeText={t("agents.badge").replace("{n}", String(resAgents.length))}
+          color="res"
+        />
       </div>
     </div>
   );
