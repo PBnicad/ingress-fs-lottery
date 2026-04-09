@@ -17,19 +17,39 @@ export default function UrlInput({
 }: Props) {
   const [url, setUrl] = useState("");
 
+  const resolveUrl = (input: string) => {
+    const trimmed = input.trim();
+    if (/^\d+$/.test(trimmed)) {
+      return `https://fevgames.net/ifs/event/?e=${trimmed}`;
+    }
+    return trimmed;
+  };
+
   const fetchAgents = async () => {
     setError("");
+    const trimmed = url.trim();
+    if (!trimmed) return;
+
+    // 不是纯数字且不是合法 fevgames URL
+    const isId = /^\d+$/.test(trimmed);
+    const isUrl = /^https?:\/\/fevgames\.net\/ifs\/event\/\?e=\d+/.test(trimmed);
+    if (!isId && !isUrl) {
+      setError("请输入纯数字 Event ID 或 fevgames.net 完整 URL");
+      return;
+    }
+
     setLoading(true);
+    const resolved = resolveUrl(url);
     try {
       const res = await fetch(
-        `/api/agents?url=${encodeURIComponent(url)}`
+        `/api/agents?url=${encodeURIComponent(resolved)}`
       );
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         throw new Error(data?.error || `请求失败 (${res.status})`);
       }
-      const data = await res.json();
-      onResult(url, data.eventTitle, data.agents);
+      const data: any = await res.json();
+      onResult(resolved, data.eventTitle, data.agents);
     } catch (e: any) {
       setError(e.message || "获取名单失败");
     } finally {
@@ -47,7 +67,7 @@ export default function UrlInput({
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://fevgames.net/ifs/event/?e=..."
+          placeholder="输入 Event ID 或完整 URL"
           className="flex-1 min-w-0 rounded-full bg-black/3 border border-black/10 px-4 py-2.5 text-[14px] tracking-[-0.01em] text-black placeholder-black/30 outline-none focus:border-black/30 focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black transition-colors"
         />
         <button
