@@ -15,7 +15,7 @@ export default function UrlInput({
   setLoading,
   setError,
 }: Props) {
-  const [url, setUrl] = useState("https://fevgames.net/ifs/event/?e=");
+  const [url, setUrl] = useState("");
 
   const fetchAgents = async () => {
     setError("");
