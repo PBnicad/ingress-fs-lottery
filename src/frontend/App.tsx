@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import UrlInput from "./components/UrlInput";
 import AgentList from "./components/AgentList";
 import LotteryForm from "./components/LotteryForm";
@@ -22,6 +22,18 @@ export interface LotteryResultData {
 export default function App() {
   const { locale, setLocale, t } = useI18n();
   const [tab, setTab] = useState<"lottery" | "query">("lottery");
+  const [open, setOpen] = useState(false);
+  const dropRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropRef.current && !dropRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const [eventUrl, setEventUrl] = useState("");
   const [eventTitle, setEventTitle] = useState("");
@@ -46,20 +58,42 @@ export default function App() {
                 {t("app.title").replace("Ingress FS ", "")}
               </span>
             </h1>
-            <div className="flex gap-1 mt-1">
-              {(["zh", "en", "ja"] as Locale[]).map((l) => (
-                <button
-                  key={l}
-                  onClick={() => setLocale(l)}
-                  className={`text-[11px] px-2 py-1 rounded-full transition-colors outline-none ${
-                    locale === l
-                      ? "bg-black text-white"
-                      : "text-black/40 hover:bg-black/5"
-                  }`}
+            <div className="relative" ref={dropRef}>
+              <button
+                onClick={() => setOpen(!open)}
+                className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.54px] px-4 py-2 rounded-full border border-black/10 bg-white text-black/60 outline-none focus:border-black/30 cursor-pointer transition-colors"
+              >
+                {localeNames[locale]}
+                <svg
+                  className={`w-3 h-3 text-black/30 transition-transform ${open ? "rotate-180" : ""}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
                 >
-                  {localeNames[l]}
-                </button>
-              ))}
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {open && (
+                <div className="absolute right-0 mt-1.5 py-1 rounded-xl border border-black/10 bg-white shadow-lg shadow-black/5 z-50 min-w-[120px] overflow-hidden">
+                  {(["zh", "en", "ja"] as Locale[]).map((l) => (
+                    <button
+                      key={l}
+                      onClick={() => {
+                        setLocale(l);
+                        setOpen(false);
+                      }}
+                      className={`w-full text-left text-[12px] font-mono px-4 py-2 transition-colors outline-none ${
+                        locale === l
+                          ? "bg-black/5 text-black font-medium"
+                          : "text-black/60 hover:bg-black/3"
+                      }`}
+                    >
+                      {localeNames[l]}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <p className="mt-2 sm:mt-3 text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.54px] text-black/40">
