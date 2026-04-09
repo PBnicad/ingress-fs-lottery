@@ -1,0 +1,32 @@
+{
+  "name": "ingress-fs-lottery",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "vite build",
+    "deploy": "vite build && wrangler deploy",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply lottery-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply lottery-db --remote"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.7.6",
+    "drizzle-orm": "^0.44",
+    "hono": "^4.12.12",
+    "react": "^19.1",
+    "react-dom": "^19.1",
+    "zod": "^3.25"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260409.1",
+    "@tailwindcss/vite": "^4.1",
+    "@types/react": "^19.1",
+    "@types/react-dom": "^19.1",
+    "@vitejs/plugin-react": "^4.4",
+    "drizzle-kit": "^0.31",
+    "tailwindcss": "^4.1",
+    "typescript": "^5.8",
+    "vite": "^6.3",
+    "wrangler": "^4"
+  }
+}

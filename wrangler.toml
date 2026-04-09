@@ -1,0 +1,16 @@
+name = "ingress-fs-lottery"
+main = "src/index.ts"
+compatibility_date = "2025-04-09"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+[assets]
+directory = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lottery-db"
+database_id = "f05914f5-32f1-4b30-ae6b-5e1de2bb5b9d"
+migrations_dir = "drizzle"
