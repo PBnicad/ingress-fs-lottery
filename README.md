@@ -9,7 +9,6 @@
 - **自动爬取名单** — 输入 fevgames.net IFS 活动页面 URL，自动解析 Agent 名单及阵营
 - **确定性抽奖** — 使用 Mulberry32 PRNG + Fisher-Yates 洗牌算法，同一名单 + 同一 Seed 结果 100% 可复现
 - **结果存档** — 抽奖结果存入 Cloudflare D1 数据库，按抽奖 ID 随时查询
-- **签到限制** — 仅可抽取已在 Auto Score Sheet 中签到的 Agent
 
 ## 技术栈
 

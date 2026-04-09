@@ -84,9 +84,9 @@ export default function App() {
               <>
                 {/* Notice */}
                 <div className="flex items-start gap-2.5 px-3 sm:px-4 py-3 rounded-lg bg-black/3 border border-black/6">
-                  <span className="text-[13px] mt-px shrink-0">ℹ️</span>
                   <p className="text-[12px] sm:text-[13px] text-black/60 leading-snug">
-                    仅可抽取已在 Auto Score Sheet 中签到的 Agent（即表格中已列出的玩家）。未签到玩家不在抽奖范围内。
+                    仅可抽取已在 Auto Score
+                    Sheet中的Agent（即表格中已列出的玩家）。
                   </p>
                 </div>
 
