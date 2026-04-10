@@ -68,9 +68,15 @@ export default function UrlInput({
       </label>
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="flex-1 min-w-0 flex items-center rounded-full bg-black/3 border border-black/10 overflow-hidden focus-within:border-black/30 transition-colors">
-          <span className="text-[12px] font-mono text-black/25 pl-4 pr-0 select-none whitespace-nowrap shrink-0 max-w-[80px] overflow-x-auto scrollbar-none">
-            fevgames.net/ifs/event/?e=
+          <span className="text-[12px] font-mono text-black/25 pl-4 pr-0 select-none whitespace-nowrap shrink-0 max-w-[80px] overflow-hidden relative">
+            <span className="inline-block animate-[marquee_4s_linear_infinite]">fevgames.net/ifs/event/?e=</span>
           </span>
+          <style>{`
+            @keyframes marquee {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-100%); }
+            }
+          `}</style>
           <input
             type="text"
             inputMode="numeric"
