@@ -21,6 +21,15 @@ export default {
   "agents.badge": "{n} 人",
   "agents.enl": "ENL · 启蒙军",
   "agents.res": "RES · 抵抗军",
+  "agents.edit.toggle": "编辑名单",
+  "agents.edit.done": "完成",
+  "agents.edit.add": "添加",
+  "agents.edit.addPlaceholder": "输入 Agent 名称",
+  "agents.edit.bulkToggle": "批量导入",
+  "agents.edit.bulkPlaceholder": "每行一个名字，可选前缀 ENL: 或 RES: 指定阵营",
+  "agents.edit.bulkApply": "导入",
+  "agents.edit.clearAll": "清空全部",
+  "agents.edit.clearConfirm": "确定清空全部名单？",
 
   // LotteryForm
   "lottery.title": "Lottery Settings",

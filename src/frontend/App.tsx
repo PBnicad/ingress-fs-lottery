@@ -45,6 +45,12 @@ export default function App() {
   const enlAgents = agents.filter((a) => a.faction === "enl");
   const resAgents = agents.filter((a) => a.faction === "res");
 
+  const updateAgents = (newAgents: Agent[]) => {
+    setAgents(newAgents);
+    setResult(null);
+    setError("");
+  };
+
   return (
     <div className="min-h-screen bg-white text-black font-sans">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -143,7 +149,7 @@ export default function App() {
                   </p>
                 </div>
 
-                <AgentList enlAgents={enlAgents} resAgents={resAgents} />
+                <AgentList enlAgents={enlAgents} resAgents={resAgents} allAgents={agents} onUpdate={updateAgents} />
                 <LotteryForm
                   agents={agents}
                   eventUrl={eventUrl}

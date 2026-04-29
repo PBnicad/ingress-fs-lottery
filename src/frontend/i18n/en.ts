@@ -21,6 +21,15 @@ export default {
   "agents.badge": "{n}",
   "agents.enl": "ENL · Enlightened",
   "agents.res": "RES · Resistance",
+  "agents.edit.toggle": "Edit List",
+  "agents.edit.done": "Done",
+  "agents.edit.add": "Add",
+  "agents.edit.addPlaceholder": "Enter agent name",
+  "agents.edit.bulkToggle": "Bulk Import",
+  "agents.edit.bulkPlaceholder": "One name per line, optional ENL: or RES: prefix",
+  "agents.edit.bulkApply": "Import",
+  "agents.edit.clearAll": "Clear All",
+  "agents.edit.clearConfirm": "Clear all agents?",
 
   // LotteryForm
   "lottery.title": "Lottery Settings",

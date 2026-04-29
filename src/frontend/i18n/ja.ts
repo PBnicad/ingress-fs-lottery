@@ -21,6 +21,15 @@ export default {
   "agents.badge": "{n} 名",
   "agents.enl": "ENL · エンライトンド",
   "agents.res": "RES · レジスタンス",
+  "agents.edit.toggle": "リスト編集",
+  "agents.edit.done": "完了",
+  "agents.edit.add": "追加",
+  "agents.edit.addPlaceholder": "エージェント名を入力",
+  "agents.edit.bulkToggle": "一括インポート",
+  "agents.edit.bulkPlaceholder": "1行1名、ENL: または RES: プレフィックスで陣営指定可能",
+  "agents.edit.bulkApply": "インポート",
+  "agents.edit.clearAll": "すべてクリア",
+  "agents.edit.clearConfirm": "すべてクリアしますか？",
 
   // LotteryForm
   "lottery.title": "Lottery Settings",
