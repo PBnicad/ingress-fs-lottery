@@ -151,18 +151,16 @@ export default function AgentList({ enlAgents, resAgents, allAgents, onUpdate }:
           <span className="text-[12px] text-black/40">
             {t("agents.count").replace("{n}", String(total))}
           </span>
-          {total > 0 && (
-            <button
-              onClick={() => setEditMode(!editMode)}
-              className={`text-[11px] font-mono px-3 py-1 rounded-full border transition-colors cursor-pointer ${
-                editMode
-                  ? "bg-black text-white border-black"
-                  : "bg-transparent text-black/50 border-black/15 hover:border-black/30 hover:text-black/70"
-              }`}
-            >
-              {editMode ? t("agents.edit.done") : t("agents.edit.toggle")}
-            </button>
-          )}
+          <button
+            onClick={() => setEditMode(!editMode)}
+            className={`text-[11px] font-mono px-3 py-1 rounded-full border transition-colors cursor-pointer ${
+              editMode
+                ? "bg-black text-white border-black"
+                : "bg-transparent text-black/50 border-black/15 hover:border-black/30 hover:text-black/70"
+            }`}
+          >
+            {editMode ? t("agents.edit.done") : t("agents.edit.toggle")}
+          </button>
         </div>
       </div>
 
@@ -222,12 +220,14 @@ export default function AgentList({ enlAgents, resAgents, allAgents, onUpdate }:
             >
               {t("agents.edit.bulkToggle")}
             </button>
-            <button
-              onClick={handleClearAll}
-              className="text-[11px] font-mono px-3 py-1 rounded-full border border-red-200 text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
-            >
-              {t("agents.edit.clearAll")}
-            </button>
+            {total > 0 && (
+              <button
+                onClick={handleClearAll}
+                className="text-[11px] font-mono px-3 py-1 rounded-full border border-red-200 text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+              >
+                {t("agents.edit.clearAll")}
+              </button>
+            )}
           </div>
 
           {/* Bulk textarea */}

@@ -140,6 +140,8 @@ export default function App() {
               setError={setError}
             />
 
+            <AgentList enlAgents={enlAgents} resAgents={resAgents} allAgents={agents} onUpdate={updateAgents} />
+
             {agents.length > 0 && (
               <>
                 {/* Notice */}
@@ -149,7 +151,6 @@ export default function App() {
                   </p>
                 </div>
 
-                <AgentList enlAgents={enlAgents} resAgents={resAgents} allAgents={agents} onUpdate={updateAgents} />
                 <LotteryForm
                   agents={agents}
                   eventUrl={eventUrl}
